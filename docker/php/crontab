@@ -1,0 +1,2 @@
+0 7 * * * /usr/local/bin/php /var/www/artisan schedule:run >> /var/log/laravel_schedule.log 2>&1
+

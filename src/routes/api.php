@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +16,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// テスト用
+Route::get('/helloworld', function () {
+    return response()->json(['message' => 'Hello, World']);
+});
+
+// 一般ユーザー用の登録ルート
+Route::post('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+
+//認証中(ログイン中)だけ叩ける
+Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
+
+    // フロントのnuxt3でnuxt-auth-sanctumモジュールのメソッド使用すると勝手に/userを叩く
+    Route::get('/user', [UserController::class, 'getUser'])->name('getUser');
 });

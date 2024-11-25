@@ -38,4 +38,22 @@ class Item extends Model
     {
         return $this->hasMany(Like::class);
     }
+
+
+    // 商品状態のテキストを返すアクセサ
+    public function getConditionTextAttribute()
+    {
+        switch ($this->condition) {
+            case 1:
+                return '良好';
+            case 2:
+                return '目立った傷や汚れなし';
+            case 3:
+                return 'やや傷や汚れあり';
+            case 4:
+                return '状態が悪い';
+            default:
+                return '不明'; // 条件外の場合
+        }
+    }
 }

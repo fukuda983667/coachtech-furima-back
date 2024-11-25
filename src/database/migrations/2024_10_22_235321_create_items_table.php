@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');  // 出品者
             $table->string('name');
             $table->text('description', 255);
-            $table->unsignedInteger('price')>length(7);
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');  // 出品者
-            $table->string('image_path')->nullable();
+            $table->unsignedInteger('price')->length(7);
+            $table->string('image_path');
+            $table->unsignedTinyInteger('condition'); // 1:良好,2:目立った傷や汚れなし,3:やや傷や汚れあり,4:状態が悪い
+            $table->string('brand');
             $table->timestamps();
         });
     }

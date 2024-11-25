@@ -15,9 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');  // 購入者
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
-            $table->integer('quantity');
-            $table->decimal('total_price', 10, 2);
-            $table->string('status');  // 注文ステータス（例：発送待ち、発送済みなど）
+            $table->foreignId('address_id')->constrained()->onDelete('cascade');
+            $table->unsignedTinyInteger('status'); // 1:注文確定,2:支払済,3:未支払,4:発送中,5:発送済
             $table->timestamps();
         });
     }

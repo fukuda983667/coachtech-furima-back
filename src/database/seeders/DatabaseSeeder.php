@@ -14,11 +14,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // `storage/app/public/item` ディレクトリを削除
+        File::deleteDirectory(storage_path('app/public/items'));
+
+        // `public/img/itemp` を `storage/app/public/item` にコピー
+        File::copyDirectory(public_path('img/items'), storage_path('app/public/items'));
+
         // 各シーダークラスを呼び出し
         $this->call([
             UserSeeder::class,
             CategorySeeder::class,
             ItemSeeder::class,
+            CategoryItemSeeder::class,
+            LikeSeeder::class,
+            CommentSeeder::class,
         ]);
     }
 }

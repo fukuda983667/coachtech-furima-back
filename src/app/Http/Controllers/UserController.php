@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use App\Models\User;
 
 
@@ -14,6 +15,9 @@ class UserController extends Controller
     {
         // 認証されたユーザーを取得
         $user = $request->user();
+
+        $baseUrl = Config::get('app.url') . '/storage/user-icons/'; //envのAPP_URLを利用してパスを設定
+        $user->image_path = $user->image_path ? $baseUrl . $user->image_path : null;
 
         // ユーザー情報をログに記録（デバッグ用）
         \Log::info($user);

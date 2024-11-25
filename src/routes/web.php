@@ -22,6 +22,6 @@ Route::get('/', function () {
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill(); // メール確認を完了
 
-    return redirect('http://localhost:3000/login');
+    return redirect('http://localhost:3000/mypage/profile');
 
 })->middleware(['auth', 'signed'])->name('verification.verify');

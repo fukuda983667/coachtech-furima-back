@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');  // 購入者
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
-            $table->foreignId('address_id')->constrained()->onDelete('cascade');
-            $table->unsignedTinyInteger('status'); // 1:注文確定,2:支払済,3:未支払,4:発送中,5:発送済
+            $table->foreignId('status_id')->constrained('order_statuses')->onDelete('cascade'); // 注文状況
+            $table->string('postal_code')->nullable(); // 郵便番号
+            $table->string('address')->nullable(); // 住所
+            $table->string('building_name')->nullable(); // 建物名
             $table->timestamps();
         });
     }

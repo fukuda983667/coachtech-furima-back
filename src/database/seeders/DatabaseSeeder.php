@@ -23,8 +23,9 @@ class DatabaseSeeder extends Seeder
         // 各シーダークラスを呼び出し
         $this->call([
             UserSeeder::class,
-            AddressSeeder::class,
             CategorySeeder::class,
+            ItemConditionSeeder::class,
+            OrderStatusSeeder::class,
             ItemSeeder::class,
             CategoryItemSeeder::class,
             LikeSeeder::class,

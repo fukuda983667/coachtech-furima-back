@@ -46,8 +46,8 @@ class ItemController extends Controller
         $userId = Auth::id(); // ログイン中のユーザーIDを取得
         $baseUrl = Config::get('app.url') . '/storage/items/';
 
-        // 指定された ID のアイテムを取得し、関連するカテゴリも取得
-        $item = Item::with('categories')->find($id);
+        // 指定された ID のアイテムを取得し、関連するカテゴリとコンディションも取得
+        $item = Item::with(['categories', 'condition'])->find($id);
 
         // アイテムが存在しない場合は 404 エラーを返す
         if (!$item) {
@@ -56,9 +56,6 @@ class ItemController extends Controller
 
         // 画像パスを構築
         $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
-
-        // condition のテキストを追加 1~4で管理してるやつ
-        $item->condition_text = $item->condition_text;
 
 
         // アイテム詳細を JSON 形式で返す

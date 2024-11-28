@@ -15,7 +15,7 @@ class Item extends Model
         'price',
         'user_id',
         'image_path',
-        'condition',
+        'condition_id',
         'brand',
     ];
 
@@ -30,7 +30,6 @@ class Item extends Model
         return $this->hasMany(Comment::class);
     }
 
-    // カテゴリーとの多対多リレーションを定義
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_item');
@@ -41,21 +40,8 @@ class Item extends Model
         return $this->hasMany(Like::class);
     }
 
-
-    // 商品状態のテキストを返すアクセサ
-    public function getConditionTextAttribute()
+    public function condition()
     {
-        switch ($this->condition) {
-            case 1:
-                return '良好';
-            case 2:
-                return '目立った傷や汚れなし';
-            case 3:
-                return 'やや傷や汚れあり';
-            case 4:
-                return '状態が悪い';
-            default:
-                return '不明'; // 条件外の場合
-        }
+        return $this->belongsTo(ItemCondition::class, 'condition_id');
     }
 }

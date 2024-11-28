@@ -19,6 +19,8 @@ class UserController extends Controller
         $baseUrl = Config::get('app.url') . '/storage/user-icons/'; //envのAPP_URLを利用してパスを設定
         $user->image_path = $user->image_path ? $baseUrl . $user->image_path : null;
 
+        $user->default_address = $user->addresses()->where('is_default', true)->first();
+
         // ユーザー情報をログに記録（デバッグ用）
         \Log::info($user);
 

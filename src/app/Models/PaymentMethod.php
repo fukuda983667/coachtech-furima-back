@@ -13,6 +13,6 @@ class PaymentMethod extends Model
 
     public function payment_methods()
     {
-        return $this->hasMany(Order::class, 'payment_method_id');
+        return $this->hasMany(Purchase::class, 'payment_method_id');
     }
 }

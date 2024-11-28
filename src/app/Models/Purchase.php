@@ -5,12 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
+class Purchase extends Model
 {
     use HasFactory;
 
-    public function status()
+    public function paymentMethod()
     {
-        return $this->belongsTo(OrderStatus::class, 'status_id');
+        return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
 }

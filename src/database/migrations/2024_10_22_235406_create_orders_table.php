@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');  // 購入者
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
-            $table->foreignId('status_id')->constrained('order_statuses')->onDelete('cascade'); // 注文状況
+            $table->foreignId('payment_method_id')->constrained()->onDelete('cascade'); // 決済方法
             $table->string('postal_code')->nullable(); // 郵便番号
             $table->string('address')->nullable(); // 住所
             $table->string('building_name')->nullable(); // 建物名

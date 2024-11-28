@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PaymentMethodController;
 
 
 /*
@@ -25,10 +26,12 @@ Route::get('/helloworld', function () {
     return response()->json(['message' => 'Hello, World']);
 });
 
-// 一般ユーザー用の登録ルート
+
+// ユーザー用の登録ルート
 Route::post('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 
 // 全アイテム取得
 Route::get('/items', [ItemController::class, 'getItems'])->name('getItems');
@@ -42,13 +45,18 @@ Route::get('/likes/{id}', [LikeController::class, 'getLike'])->name('getlLike');
 Route::get('/comments/{id}', [CommentController::class, 'getComments'])->name('getComments');
 
 
-//認証中(ログイン中)だけ叩ける
+// ログイン中かつメール認証済みなら叩ける
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     // フロントのnuxt3でnuxt-auth-sanctumモジュールのメソッド使用すると勝手に/userを叩く
     Route::get('/user', [UserController::class, 'getUser'])->name('getUser');
 
-    Route::post('/likes', [LikeController::class, 'toggleLike'])->name('toggleLike');  // お気に入り登録と解除
+    // お気に入り登録と解除
+    Route::post('/likes', [LikeController::class, 'toggleLike'])->name('toggleLike');
 
+    // コメント投稿
     Route::post('comments', [CommentController::class, 'storeComment'])->name('storeComment');
+
+    // 支払い方法選択肢提供
+    Route::get('/payment-methods', [PaymentMethodController::class, 'getPaymentMethods'])->name('getPaymentMethods');
 });

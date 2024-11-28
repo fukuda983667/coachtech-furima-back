@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             ItemConditionSeeder::class,
-            OrderStatusSeeder::class,
+            PaymentMethodSeeder::class,
             ItemSeeder::class,
             CategoryItemSeeder::class,
             LikeSeeder::class,

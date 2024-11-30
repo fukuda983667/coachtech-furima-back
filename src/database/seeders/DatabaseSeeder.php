@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             CategoryItemSeeder::class,
             LikeSeeder::class,
             CommentSeeder::class,
+            PurchaseSeeder::class,
         ]);
     }
 }

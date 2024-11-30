@@ -9,6 +9,15 @@ class Purchase extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'user_id',
+        'item_id',
+        'payment_method_id',
+        'postal_code',
+        'address',
+        'building_name',
+    ];
+
     public function paymentMethod()
     {
         return $this->belongsTo(PaymentMethod::class, 'payment_method_id');

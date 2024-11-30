@@ -8,6 +8,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\PurchaseController;
 
 
 /*
@@ -55,8 +56,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/likes', [LikeController::class, 'toggleLike'])->name('toggleLike');
 
     // コメント投稿
-    Route::post('comments', [CommentController::class, 'storeComment'])->name('storeComment');
+    Route::post('/comments', [CommentController::class, 'storeComment'])->name('storeComment');
 
     // 支払い方法選択肢提供
     Route::get('/payment-methods', [PaymentMethodController::class, 'getPaymentMethods'])->name('getPaymentMethods');
+
+    // 購入処理
+    Route::post('/purchases', [PurchaseController::class, 'storePurchase'])->name('storePurchase');
 });

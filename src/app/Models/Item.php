@@ -44,4 +44,10 @@ class Item extends Model
     {
         return $this->belongsTo(ItemCondition::class, 'condition_id');
     }
+
+    public function purchase()
+    {
+        return $this->hasOne(Purchase::class);
+    }
 }
+

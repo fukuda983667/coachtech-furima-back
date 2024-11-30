@@ -22,4 +22,9 @@ class Purchase extends Model
     {
         return $this->belongsTo(PaymentMethod::class, 'payment_method_id');
     }
+
+    public function item()
+    {
+        return $this->belongsTo(Item::class);
+    }
 }

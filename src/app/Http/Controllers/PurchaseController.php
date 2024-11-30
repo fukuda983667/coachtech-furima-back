@@ -15,7 +15,7 @@ class PurchaseController extends Controller
         $validatedData = $request->validate([
             'item_id' => 'required|exists:items,id',
             'payment_method_id' => 'required|exists:payment_methods,id',
-            'postal_code' => 'required|string|max:10',
+            'postal_code' => 'required|string|regex:/^\d{3}-\d{4}$/',
             'address' => 'required|string|max:255',
             'building_name' => 'required|string|max:255',
         ]);

@@ -22,6 +22,7 @@ class AuthController extends Controller
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'password' => Hash::make($validatedData['password']),
+            'image_path' => 'default-user.jpeg'
         ]);
 
         // ユーザーをログインさせる

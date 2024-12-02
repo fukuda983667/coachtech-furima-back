@@ -51,6 +51,11 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     // フロントのnuxt3でnuxt-auth-sanctumモジュールのメソッド使用すると勝手に/userを叩く
     Route::get('/user', [UserController::class, 'getUser'])->name('getUser');
+    // プロファイル更新 (ユーザ名、住所、アイコン画像)
+    Route::post('/user/profile', [UserController::class, 'storeProfile'])->name('storeProfile');
+
+    // マイページ表示用の購入商品と出品商品取得
+    Route::get('/user/my-page', [UserController::class, 'getMyPageItems'])->name('getMyPageItems');
 
     // お気に入り登録と解除
     Route::post('/likes', [LikeController::class, 'toggleLike'])->name('toggleLike');
@@ -64,3 +69,4 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // 購入処理
     Route::post('/purchases', [PurchaseController::class, 'storePurchase'])->name('storePurchase');
 });
+

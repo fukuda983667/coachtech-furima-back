@@ -66,4 +66,54 @@ class ItemController extends Controller
         // アイテム詳細を JSON 形式で返す
         return response()->json(compact('item'), 200);
     }
+
+
+    // item作成処理
+    public function storeItem(Request $request)
+    {
+        // JSON文字列を配列にデコード
+        $categories = json_decode($request->input('categories'), true);
+        // デコードした配列をリクエストにマージ
+        $request->merge(['categories' => $categories]);
+
+        $validatedData = $request->validate([
+            'categories' => 'required|array',
+            'categories.*' => 'exists:categories,id', // 各IDがcategoriesテーブルに存在することを確認
+            'condition_id' => 'required|exists:item_conditions,id',
+            'name' => 'required|string|max:255',
+            'brand' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+            'price' => 'required|numeric|min:1|max:9999999',
+            'image_path' => 'required|file|mimes:jpeg,png|max:2048', // JPEG/PNG形式のみ許可、2MBまで
+        ]);
+
+        // ファイルアップロード処理
+        if ($request->hasFile('image_path')) {
+            $uploadedFile = $request->file('image_path');
+
+            // 一意なファイル名を生成
+            $uniqueFileName = time() . '_' . $uploadedFile->getClientOriginalName();
+
+            // ファイルを storage/app/public/items に保存
+            $path = $uploadedFile->storeAs('items', $uniqueFileName, 'public');
+            $validatedData['image_path'] = $uniqueFileName;
+        }
+
+        // item作成
+        $item = Item::create([
+            'user_id' => Auth::id(),
+            'name' => $validatedData['name'],
+            'brand' => $validatedData['brand'],
+            'description' => $validatedData['description'],
+            'price' => $validatedData['price'],
+            'condition_id' => $validatedData['condition_id'],
+            'image_path' => $validatedData['image_path'],
+        ]);
+
+        // 中間テーブル(categry_itemテーブル)へのレコード作成
+        $item->categories()->sync($validatedData['categories']);
+
+
+        return response()->json(['message' => '商品作成処理に成功しました'], 201);
+    }
 }

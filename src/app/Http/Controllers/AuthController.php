@@ -62,6 +62,11 @@ class AuthController extends Controller
 
     //ログアウト機能
     public function logout(Request $request) {
+        // ユーザーがログインしていない場合はエラーメッセージを返す
+        if (!Auth::check()) {
+            return response()->json(['message' => 'ログインしていません'], 401);
+        }
+
         Auth::logout(); // ユーザーのログアウト
         $request->session()->invalidate(); // セッションの無効化
         $request->session()->regenerateToken(); // CSRFトークンの再生成

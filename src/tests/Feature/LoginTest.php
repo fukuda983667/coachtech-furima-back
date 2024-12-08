@@ -37,6 +37,8 @@ class LoginTest extends TestCase
         $this->assertAuthenticated();
     }
 
+
+    // ▼▼▼▼▼ バリデーションエラーのテスト 異常系 ▼▼▼▼▼
     // メールアドレス未入力テスト
     public function test_login_validation_email_required()
     {

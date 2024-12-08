@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
@@ -33,12 +34,15 @@ class AuthController extends Controller
 
 
     //ユーザーログイン機能
-    public function login(Request $request) {
-        // リクエストに含まれるデータを検証
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required', 'min:8'],
-        ]);
+    public function login(LoginRequest $request) {
+        // データ取得
+        $credentials = $request->validated();
+
+        // 該当するメールアドレスのユーザーが存在するか確認
+        $userExists = User::where('email', $credentials['email'])->exists();
+        if (!$userExists) {
+            return response()->json(['message' => 'ログイン情報が登録されていません'], 401);
+        }
 
         // 該当のカラムがユーザーテーブルに存在していた場合
         if (Auth::attempt(['email' => $credentials['email'], 'password' => $credentials['password']])) {
@@ -52,7 +56,7 @@ class AuthController extends Controller
         }
 
         // 認証失敗
-        return response()->json(['message' => 'ログイン失敗'], 401);
+        return response()->json(['message' => 'ログイン情報が登録されていません'], 401);
     }
 
 

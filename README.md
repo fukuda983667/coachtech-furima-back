@@ -11,3 +11,4 @@ php artisan migrate:refresh --seed --env=testing
 ./vendor/bin/phpunit --filter LogoutTest
 ./vendor/bin/phpunit --filter ItemsTest
 ./vendor/bin/phpunit --filter MyListTest
+./vendor/bin/phpunit --filter ItemTest

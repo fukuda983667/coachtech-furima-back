@@ -17,7 +17,7 @@ class ItemController extends Controller
 
         // ログイン中のユーザーが出品した商品を除外、ゲストユーザ($userIdがnull)はそのまま全商品をフロントに渡す。
         $query = Item::query();
-        if (!is_null($userId)) {
+        if ($userId) {
             $query->where('user_id', '!=', $userId);
         }
 
@@ -25,11 +25,9 @@ class ItemController extends Controller
         $items = $query->get()->map(function ($item) use ($baseUrl, $userId) {
             $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
 
-            // isLiked プロパティを追加（ログインしている場合のみ判定）
-            if (!is_null($userId)) {
+            // isLiked プロパティを追加（ログインしている場合）
+            if ($userId) {
                 $item->isLiked = $item->likes()->where('user_id', $userId)->exists();
-            } else {
-                $item->isLiked = false; // ゲストユーザーはすべてfalse
             }
 
             // isSold プロパティを追加（購入済みかどうかを判定）
@@ -54,7 +52,7 @@ class ItemController extends Controller
 
         // アイテムが存在しない場合は 404 エラーを返す
         if (!$item) {
-            return response()->json(['error' => 'Item not found'], 404);
+            return response()->json(['message' => '商品が見つかりませんでした'], 404);
         }
 
         // 画像パスを構築

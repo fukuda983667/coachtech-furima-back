@@ -13,16 +13,19 @@ class LikeController extends Controller
     {
         $userId = Auth::id(); // ログイン中のユーザーIDを取得
 
-        // お気に入り状況（isLiked）を取得
-        $isLiked = $userId ? Like::where('user_id', $userId)->where('item_id', $id)->exists() : false;
-
         // お気に入り件数（like_count）を取得
-        $likeCount = Like::where('item_id', $id)->count();
+        $response = [
+            'like_count' => Like::where('item_id', $id)->count(),
+        ];
 
-        return response()->json([
-            'isLiked' => $isLiked,
-            'like_count' => $likeCount
-        ], 200);
+        // ログイン中のユーザにのみ、お気に入り状況（isLiked）を取得
+        if ($userId) {
+            $isLiked = Like::where('user_id', $userId)->where('item_id', $id)->exists();
+            $response['isLiked'] = $isLiked;
+        }
+
+
+        return response()->json($response, 200);
     }
 
     // お気に入り登録と解除の切り替え 解除はレコードの物理削除

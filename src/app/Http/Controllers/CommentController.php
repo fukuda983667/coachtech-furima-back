@@ -20,20 +20,20 @@ class CommentController extends Controller
         $comments = Comment::where('item_id', $id)
             ->with([
                 'user' => function ($query) {
-                    $query->select('id', 'name', 'image_path'); // 必要なフィールドを選択
+                    $query->select('id', 'name', 'image_path'); // コメントしたユーザ情報取得
                 }
             ])
-            ->get(['id', 'user_id', 'comment', 'created_at', 'item_id']); // 必要なコメントフィールドを選択
+            ->get(['id', 'user_id', 'comment', 'created_at', 'item_id']); // コメント情報取得
 
         // 各コメントの user->image_path に $baseUrl を結合
         $comments->each(function ($comment) use ($baseUrl) {
-            if ($comment->user && $comment->user->image_path) {
-                // もしimage_pathがすでにフルURLの場合、baseUrlを結合しない
-                if (strpos($comment->user->image_path, 'http') !== 0) {
-                    $comment->user->image_path = $baseUrl . $comment->user->image_path;
-                }
+            // ユーザー情報の存在と画像パスを確認
+            $user = $comment->user;
+            $imagePath = $user->image_path ?? null;
+            // フルURLに変換
+            if ($imagePath && strpos($imagePath, 'http') !== 0) {
+                $user->image_path = $baseUrl . $imagePath;
             }
-
             // コメントの作成日時を相対的な時間として取得
             $comment->created_at_relative = Carbon::parse($comment->created_at)->diffForHumans();
         });

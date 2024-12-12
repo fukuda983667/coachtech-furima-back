@@ -18,6 +18,7 @@
         </include>
     </source>
     <php>
+        <!-- phpunitテスト実行時、config/app.phpは.env.testingファイルを読み込む -->
         <env name="APP_ENV" value="testing"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>

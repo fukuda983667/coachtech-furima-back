@@ -39,7 +39,7 @@ class MyListTest extends TestCase
         fwrite(STDOUT, "\n" . "お気に入り商品のisLikedプロパティがtrueであることを確認" . "\n");
         collect($response->json('items'))->each(function ($item) use ($testUser) {
 
-            // isSoldプロパティが存在していることを確認
+            // isLikedプロパティが存在していることを確認
             $this->assertArrayHasKey('isLiked', $item);
 
             // ユーザモデルのlikesリレーションをitemに紐づくlikeレコードの存在をboolean型で取得

@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // phpunitテスト実行時、毎回シーディングが実行されます。その際、loacal環境で保存した画像は消去されます。
         // `storage/app/public/items` ディレクトリを削除
         File::deleteDirectory(storage_path('app/public/items'));
         // `public/img/items` を `storage/app/public/item` にコピー

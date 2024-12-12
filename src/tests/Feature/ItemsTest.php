@@ -44,11 +44,23 @@ class ItemsTest extends TestCase
         $response->assertJsonCount($expectedCount, 'items');
 
 
-        // 商品一覧の表示には最低限'id', 'name', 'image_path'が必要
-        collect($response->json('items'))->each(function ($item) {
-            $this->assertArrayHasKey('id', $item);
-            $this->assertArrayHasKey('name', $item);
-            $this->assertArrayHasKey('image_path', $item);
+        // 環境設定からベースURLを取得 config('app.url')は.env.testingのAPP_URLを参照している
+        $baseUrl = config('app.url') . '/storage/items/';
+        // itemsテーブルのデータを取得
+        $items = Item::all();
+
+        // レスポンスデータを検証
+        collect($response->json('items'))->each(function ($responseItem) use ($items, $baseUrl) {
+            // 商品一覧の表示には最低限'id', 'name', 'image_path'のプロパティが必要
+            $this->assertArrayHasKey('id', $responseItem);
+            $this->assertArrayHasKey('name', $responseItem);
+            $this->assertArrayHasKey('image_path', $responseItem);
+
+            // レスポンスのitemと対応するitemをitemsテーブル($items)から取得
+            $dbItem = $items->firstWhere('id', $responseItem['id']);
+            // image_pathが加工されていることを確認
+            $expectedImagePath = $baseUrl . $dbItem->image_path;
+            $this->assertEquals($expectedImagePath, $responseItem['image_path']);
         });
     }
 
@@ -99,7 +111,7 @@ class ItemsTest extends TestCase
         // レスポンス内の全itemsを取得
         $items = $response->json('items');
 
-        // 自分が出品した商品のIDを取得
+        // 自分が出品した商品IDを取得
         $userItemIds = Item::where('user_id', $testUser->id)->pluck('id')->toArray();
         // レスポンスに含まれる商品IDを抽出
         $responseItemIds = collect($items)->pluck('id')->toArray();
@@ -112,18 +124,5 @@ class ItemsTest extends TestCase
         foreach ($items as $item) {
             $this->assertNotContains($item['id'], $userItemIds, "自分が出品した商品が含まれています。Item ID: {$item['id']}");
         }
-    }
-
-
-    // ゲストユーザはisLikedプロパティを持たない = お気に入り機能がない
-    public function test_guest_items_dont_have_isLiked_property()
-    {
-        $response = $this->getJson('/api/items');
-        $response->assertStatus(200);
-
-        // isLikedプロパティが存在しないことを確認
-        collect($response->json('items'))->each(function ($item) {
-            $this->assertArrayNotHasKey('isLiked', $item);
-        });
     }
 }

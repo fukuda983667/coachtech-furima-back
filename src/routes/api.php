@@ -26,7 +26,7 @@ use App\Http\Controllers\PurchaseController;
 
 // テスト用
 Route::get('/helloworld', function () {
-    return response()->json(['message' => 'Hello, World']);
+    return response()->json(['message' => 'Hello, World [api]']);
 });
 
 

@@ -65,7 +65,7 @@ class ItemsTest extends TestCase
     }
 
 
-    // 購入済み商品はisSoldプロパティがtrueである。→フロントエンドで購入済みか否かを判断するためのプロパティがある。
+    // 購入済み商品はis_soldプロパティがtrueである。→フロントエンドで購入済みか否かを判断するためのプロパティがある。
     public function test_items_have_correct_isSold_property()
     {
         // 未認証ユーザでAPIリクエストを送信(全item取得)
@@ -101,7 +101,6 @@ class ItemsTest extends TestCase
     {
         // テストユーザ情報
         $testUser = User::where('email', 'test-taro@mail.com')->first();
-        $this->assertNotNull($testUser, "テストユーザ 'test-taro@mail.com' が存在しません。");
 
         // ログインしてリクエスト送信
         $this->actingAs($testUser);

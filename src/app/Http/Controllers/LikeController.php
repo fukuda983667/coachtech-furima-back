@@ -39,6 +39,7 @@ class LikeController extends Controller
                     ->first();
 
         if ($like) {
+            // お気に入り解除
             $like->delete();
 
             // お気に入り件数を取得
@@ -50,6 +51,7 @@ class LikeController extends Controller
                 'like_count' => $likeCount,
             ], 200);
         } else {
+            // お気に入り登録
             Like::create([
                 'user_id' => $userId,
                 'item_id' => $itemId,

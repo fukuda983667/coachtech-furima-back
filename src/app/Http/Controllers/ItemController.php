@@ -21,17 +21,17 @@ class ItemController extends Controller
             $query->where('user_id', '!=', $userId);
         }
 
-        // アイテムを取得し、image_path プロパティと isLiked プロパティを追加
+        // アイテムを取得し、image_path プロパティと is_liked プロパティを追加
         $items = $query->get()->map(function ($item) use ($baseUrl, $userId) {
             $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
 
             // isLiked プロパティを追加（ログインしている場合）
             if ($userId) {
-                $item->isLiked = $item->likes()->where('user_id', $userId)->exists();
+                $item->is_liked = $item->likes()->where('user_id', $userId)->exists();
             }
 
             // isSold プロパティを追加（購入済みかどうかを判定）
-            $item->isSold = $item->purchase()->exists();
+            $item->is_sold = $item->purchase()->exists();
 
             return $item;
         });
@@ -59,7 +59,7 @@ class ItemController extends Controller
         $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
 
         // isSold プロパティを追加（購入済みかどうかを判定）
-        $item->isSold = $item->purchase()->exists();
+        $item->is_sold = $item->purchase()->exists();
 
         // アイテム詳細を JSON 形式で返す
         return response()->json(compact('item'), 200);

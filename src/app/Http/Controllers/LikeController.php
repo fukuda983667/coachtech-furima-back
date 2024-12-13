@@ -21,7 +21,7 @@ class LikeController extends Controller
         // ログイン中のユーザにのみ、お気に入り状況（isLiked）を取得
         if ($userId) {
             $isLiked = Like::where('user_id', $userId)->where('item_id', $id)->exists();
-            $response['isLiked'] = $isLiked;
+            $response['is_liked'] = $isLiked;
         }
 
 
@@ -46,7 +46,7 @@ class LikeController extends Controller
 
             return response()->json([
                 'message' => 'お気に入りを解除しました',
-                'isLiked' => false,
+                'is_liked' => false,
                 'like_count' => $likeCount,
             ], 200);
         } else {
@@ -60,7 +60,7 @@ class LikeController extends Controller
 
             return response()->json([
                 'message' => 'お気に入り登録しました',
-                'isLiked' => true,
+                'is_liked' => true,
                 'like_count' => $likeCount,
             ], 201);
         }

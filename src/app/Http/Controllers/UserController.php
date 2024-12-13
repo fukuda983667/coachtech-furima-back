@@ -80,7 +80,7 @@ class UserController extends Controller
                 if ($purchase->item) {
                     $item = $purchase->item;
                     $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
-                    $item->isSold = true;
+                    $item->is_sold = true;
                     return $item;
                 }
                 return null;
@@ -92,7 +92,7 @@ class UserController extends Controller
             ->map(function ($item) use ($baseUrl) {
                 $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
                 // isSold プロパティを追加（購入済みかどうかを判定）
-                $item->isSold = $item->purchase()->exists();
+                $item->is_sold = $item->purchase()->exists();
                 return $item;
             });
 

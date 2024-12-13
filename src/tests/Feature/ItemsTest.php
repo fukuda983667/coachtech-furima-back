@@ -77,21 +77,21 @@ class ItemsTest extends TestCase
         collect($response->json('items'))->each(function ($item) {
 
             // isSoldプロパティが存在していることを確認
-            $this->assertArrayHasKey('isSold', $item);
+            $this->assertArrayHasKey('is_sold', $item);
 
             // Itemモデルのpurchase()リレーションを利用してitemに紐づく購入レコードの存在をboolean型で取得
             $expectedIsSold = Item::find($item['id'])->purchase()->exists();
 
             // ログ出力
-            fwrite(STDOUT, "Item ID: {$item['id']} | isSoldプロパティ "
-                . var_export($item['isSold'], true)
+            fwrite(STDOUT, "Item ID: {$item['id']} | is_soldプロパティ "
+                . var_export($item['is_sold'], true)
                 . " | purchaseレコードの有無: "
                 . var_export($expectedIsSold, true)
                 . "\n"
             );
 
             // isSoldの値が正しいことを確認
-            $this->assertEquals($expectedIsSold, $item['isSold'], "Item ID: {$item['id']} のisSoldが正しくありません。");
+            $this->assertEquals($expectedIsSold, $item['is_sold'], "Item ID: {$item['id']} のis_soldが正しくありません。");
         });
     }
 

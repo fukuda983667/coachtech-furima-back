@@ -40,21 +40,21 @@ class MyListTest extends TestCase
         collect($response->json('items'))->each(function ($item) use ($testUser) {
 
             // isLikedプロパティが存在していることを確認
-            $this->assertArrayHasKey('isLiked', $item);
+            $this->assertArrayHasKey('is_liked', $item);
 
             // ユーザモデルのlikesリレーションをitemに紐づくlikeレコードの存在をboolean型で取得
             $expectedIsLiked = $testUser->likes()->where('item_id', $item['id'])->exists();
 
             // ログ出力
-            fwrite(STDOUT, "Item ID: {$item['id']} | isLikedプロパティ "
-                . var_export($item['isLiked'], true)
+            fwrite(STDOUT, "Item ID: {$item['id']} | is_likedプロパティ "
+                . var_export($item['is_liked'], true)
                 . " | likeレコードの有無: "
                 . var_export($expectedIsLiked, true)
                 . "\n"
             );
 
             // isLikedの値が正しいことを確認
-            $this->assertEquals($expectedIsLiked, $item['isLiked'], "Item ID: {$item['id']} のisLikedが正しくありません。");
+            $this->assertEquals($expectedIsLiked, $item['is_liked'], "Item ID: {$item['id']} のis_likedが正しくありません。");
         });
     }
 
@@ -67,7 +67,7 @@ class MyListTest extends TestCase
 
         // isLikedプロパティが存在しないことを確認
         collect($response->json('items'))->each(function ($item) {
-            $this->assertArrayNotHasKey('isLiked', $item);
+            $this->assertArrayNotHasKey('is_liked', $item);
         });
     }
 }

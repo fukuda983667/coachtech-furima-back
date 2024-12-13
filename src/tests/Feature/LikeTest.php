@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
+use App\Models\User;
 
 
 class LikeTest extends TestCase
@@ -23,6 +23,20 @@ class LikeTest extends TestCase
     }
 
 
-    // ログインユーザは商品をお気に入り登録できる
+    // 特定のitemのお気に入り状況を取得できるかテスト
+    public function test_it_returns_like_count_for_item()
+    {
+        // テストユーザ情報
+        $testUser = User::where('email', 'test-taro@mail.com')->first();
+        $this->assertNotNull($testUser, "テストユーザ 'test-taro@mail.com' が存在しません。");
 
+        // ログインしてリクエスト送信
+        $this->actingAs($testUser);
+        $response = $this->getJson('/api/likes/1');
+
+        // ステータスコード200を確認
+        $response->assertStatus(200);
+
+
+    }
 }

@@ -28,7 +28,6 @@ class MyListTest extends TestCase
     {
         // テストユーザ情報
         $testUser = User::where('email', 'test-taro@mail.com')->first();
-        $this->assertNotNull($testUser, "テストユーザ 'test-taro@mail.com' が存在しません。");
 
         // ログインしてリクエスト送信
         $this->actingAs($testUser);
@@ -59,8 +58,8 @@ class MyListTest extends TestCase
     }
 
 
-    // ゲストユーザはisLikedプロパティを持たない。→お気に入り機能がない
-    public function test_guest_items_dont_have_isLiked_property()
+    // ゲストユーザはis_likedプロパティを持たない。→お気に入り機能がない
+    public function test_guest_items_dont_have_is_liked_property()
     {
         $response = $this->getJson('/api/items');
         $response->assertStatus(200);

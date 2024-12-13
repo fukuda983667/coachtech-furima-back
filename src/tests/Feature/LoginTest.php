@@ -119,7 +119,7 @@ class LoginTest extends TestCase
         // 誤ったパスワードでログインを試みる
         $data = [
             'email' => 'test@example.com',
-            'password' => 'wrongpassword', // 間違ったパスワード
+            'password' => 'password987', // 間違ったパスワード
         ];
 
         $response = $this->postJson('/api/login', $data);

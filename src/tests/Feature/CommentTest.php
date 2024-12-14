@@ -34,11 +34,13 @@ class CommentTest extends TestCase
         $responseBefore->assertStatus(200);
         $initialCount = $responseBefore->json('comment_count');
 
-        // コメント送信リクエスト
-        $response = $this->postJson('/api/comments', [
+        $data = [
             'item_id' => 1,
             'comment' => 'テストコメント',
-        ]);
+        ];
+
+        // コメント送信リクエスト
+        $response = $this->postJson('/api/comments', $data);
 
         // ステータスコード201を確認
         $response->assertStatus(201);
@@ -64,11 +66,13 @@ class CommentTest extends TestCase
     // 未認証ユーザはコメントできない
     public function test_guset_user_can_not_comment_on_item()
     {
-        // コメント送信リクエスト
-        $response = $this->postJson('/api/comments', [
+        $data = [
             'item_id' => 1,
             'comment' => 'テストコメント',
-        ]);
+        ];
+
+        // コメント送信リクエスト
+        $response = $this->postJson('/api/comments', $data);
 
         $response->assertStatus(401);
 

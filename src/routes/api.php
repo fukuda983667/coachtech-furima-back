@@ -52,6 +52,7 @@ Route::get('/comments/{id}', [CommentController::class, 'getComments'])->name('g
 Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
 
     // フロントのnuxt3でnuxt-auth-sanctumモジュールのメソッド使用すると勝手に/userを叩く
+    // nuxt側は/userを叩いてレスポンスがステータスコード200であることを認識しない限り未認証とみなす。
     Route::get('/user', [UserController::class, 'getUser'])->name('getUser');
 
 

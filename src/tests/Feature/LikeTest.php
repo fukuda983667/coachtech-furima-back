@@ -82,4 +82,17 @@ class LikeTest extends TestCase
         // is_likedがfalseか確認
         $response->assertJson(['is_liked' => false]);
     }
+
+
+    // ゲストユーザはお気に入り登録できない
+    public function test_guest_user_can_not_like_an_item()
+    {
+        // ログインせずにお気に入り登録リクエスト
+        $response = $this->postJson('/api/likes', ['item_id' => 6]);
+
+        $response->assertStatus(401);
+
+        // ミドルウェアではじかれたときのメッセージ内容確認
+        $response->assertJson(['message' => 'Unauthenticated.']);
+    }
 }

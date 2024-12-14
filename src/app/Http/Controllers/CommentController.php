@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Auth;
@@ -46,18 +47,13 @@ class CommentController extends Controller
     }
 
     // コメント送信機能
-    public function storeComment(Request $request)
+    public function storeComment(CommentRequest $request)
     {
-        $validatedData = $request->validate([
-            'item_id' => 'required|exists:items,id',
-            'comment' => 'required|string|max:255',
-        ]);
-
         // コメント作成
         $comment = Comment::create([
             'user_id' => Auth::id(), // ログイン中のユーザーID
-            'item_id' => $validatedData['item_id'],
-            'comment' => $validatedData['comment'],
+            'item_id' => $request->item_id,
+            'comment' => $request->comment,
         ]);
 
         // 作成したコメントの詳細を返す

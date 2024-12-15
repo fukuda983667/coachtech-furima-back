@@ -4,12 +4,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AddressController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemConditionController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\CommentController;
-use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\PurchaseController;
 
 
@@ -60,7 +60,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/user/profile', [UserController::class, 'storeProfile'])->name('storeProfile');
     // マイページ表示用の購入商品と出品商品取得
     Route::get('/user/my-page', [UserController::class, 'getMyPageItems'])->name('getMyPageItems');
-
+    // 住所情報取得
+    Route::get('/user/address', [AddressController::class, 'getAddress'])->name('getAddress');
 
     // カテゴリー選択肢提供
     Route::get('/categories', [CategoryController::class, 'getCategories'])->name('getCategories');
@@ -76,8 +77,8 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/comments', [CommentController::class, 'storeComment'])->name('storeComment');
 
 
-    // 支払い方法選択肢提供
-    Route::get('/payment-methods', [PaymentMethodController::class, 'getPaymentMethods'])->name('getPaymentMethods');
+
+
     // 購入処理
     Route::post('/purchases', [PurchaseController::class, 'storePurchase'])->name('storePurchase');
 });

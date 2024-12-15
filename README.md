@@ -2,7 +2,10 @@
 
 docker-compose exec php bash
 
+cat storage/logs/laravel.log
+
 php artisan route:clear
+php artisan route:cache
 php artisan migrate:refresh --seed
 
 php artisan migrate:refresh --seed --env=testing

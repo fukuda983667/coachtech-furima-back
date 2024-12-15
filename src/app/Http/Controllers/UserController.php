@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ProfileRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use App\Models\Address;
 use App\Models\Item;
 use App\Models\Purchase;
 
@@ -28,16 +30,8 @@ class UserController extends Controller
         return response()->json($user,200);
     }
 
-    public function storeProfile(Request $request)
+    public function storeProfile(ProfileRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'image_path' => 'nullable|file|mimes:jpeg,png|max:2048', // JPEG/PNG形式のみ許可、2MBまで
-            'postal_code' => 'required|regex:/^\d{3}-\d{4}$/',
-            'address' => 'required|string|max:255',
-            'building_name' => 'required|string|max:255',
-        ]);
-
         // 現在認証されているユーザーを取得
         $user = Auth::user();
 
@@ -50,20 +44,31 @@ class UserController extends Controller
 
             // ファイルを保存
             $path = $uploadedFile->storeAs('user-icons', $uniqueFileName, 'public'); // storage/app/public/user-icons に保存
-            $validatedData['image_path'] = $uniqueFileName;
+            $imagePath = $uniqueFileName;
+        } else {
+            $imagePath = $user->image_path; // 既存の画像パスを使用
         }
 
-        // データの更新
+        // 名前と画像パスの更新
         $user->update([
-            'name' => $validatedData['name'],
-            'image_path' => $validatedData['image_path'] ?? $user->image_path,
-            'postal_code' => $validatedData['postal_code'],
-            'address' => $validatedData['address'],
-            'building_name' => $validatedData['building_name'] ?? $user->building_name,
+            'name' => $request->input('name'),
+            'image_path' => $imagePath,
         ]);
 
-        return response()->json(['message' => 'プロフィールが更新されました。',], 200);
-    }
+        // 既存のデフォルト住所を解除
+        Address::where('user_id', $user->id)->where('is_default', true)->update(['is_default' => false]);
+
+        // 新しい住所を追加（デフォルト設定）
+        Address::create([
+            'user_id' => $user->id,
+            'postal_code' => $request->input('postal_code'),
+            'address' => $request->input('address'),
+            'building_name' => $request->input('building_name'),
+            'is_default' => true,
+        ]);
+
+            return response()->json(['message' => 'プロフィールが更新されました。',], 200);
+        }
 
     // マイページで表示する購入itemsと出品itemsを取得
     public function getMyPageItems()

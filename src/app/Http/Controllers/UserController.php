@@ -72,7 +72,7 @@ class UserController extends Controller
         $baseUrl = Config::get('app.url') . '/storage/items/'; // 商品画像のベースURL
 
         // 購入したアイテムを取得
-        $purchasedItems = Order::where('user_id', $userId)
+        $purchasedItems = Purchase::where('user_id', $userId)
             ->with('item') // アイテムリレーションをロード
             ->get()
             ->map(function ($purchase) use ($baseUrl) {
@@ -92,7 +92,7 @@ class UserController extends Controller
             ->map(function ($item) use ($baseUrl) {
                 $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
                 // isSold プロパティを追加（購入済みかどうかを判定）
-                $item->is_sold = $item->order()->exists();
+                $item->is_sold = $item->purchase()->exists();
                 return $item;
             });
 

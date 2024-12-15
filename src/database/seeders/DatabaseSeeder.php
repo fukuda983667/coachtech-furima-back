@@ -30,12 +30,11 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CategorySeeder::class,
             ItemConditionSeeder::class,
-            PaymentMethodSeeder::class,
             ItemSeeder::class,
             CategoryItemSeeder::class,
             LikeSeeder::class,
             CommentSeeder::class,
-            PurchaseSeeder::class,
+            OrderSeeder::class,
         ]);
     }
 }

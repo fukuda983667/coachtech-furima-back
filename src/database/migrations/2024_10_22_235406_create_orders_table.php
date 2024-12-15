@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('purchases', function (Blueprint $table) {
+        Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');  // 購入者
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
-            $table->foreignId('payment_method_id')->constrained()->onDelete('cascade'); // 決済方法
+            $table->unsignedTinyInteger('payment_method');
             $table->string('postal_code')->nullable(); // 郵便番号
             $table->string('address')->nullable(); // 住所
             $table->string('building_name')->nullable(); // 建物名
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('purchases');
+        Schema::dropIfExists('orders');
     }
 };

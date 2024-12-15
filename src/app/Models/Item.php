@@ -45,9 +45,9 @@ class Item extends Model
         return $this->belongsTo(ItemCondition::class, 'condition_id');
     }
 
-    public function purchase()
+    public function order()
     {
-        return $this->hasOne(Purchase::class);
+        return $this->hasOne(Order::class);
     }
 }
 

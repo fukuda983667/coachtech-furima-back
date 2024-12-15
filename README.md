@@ -2,6 +2,7 @@
 
 docker-compose exec php bash
 
+php artisan route:clear
 php artisan migrate:refresh --seed
 
 php artisan migrate:refresh --seed --env=testing

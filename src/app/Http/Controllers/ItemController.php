@@ -31,7 +31,7 @@ class ItemController extends Controller
             }
 
             // isSold プロパティを追加（購入済みかどうかを判定）
-            $item->is_sold = $item->purchase()->exists();
+            $item->is_sold = $item->order()->exists();
 
             return $item;
         });
@@ -59,7 +59,7 @@ class ItemController extends Controller
         $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
 
         // isSold プロパティを追加（購入済みかどうかを判定）
-        $item->is_sold = $item->purchase()->exists();
+        $item->is_sold = $item->order()->exists();
 
         // アイテム詳細を JSON 形式で返す
         return response()->json(compact('item'), 200);

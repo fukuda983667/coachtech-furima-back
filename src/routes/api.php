@@ -60,8 +60,12 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/user/profile', [UserController::class, 'storeProfile'])->name('storeProfile');
     // マイページ表示用の購入商品と出品商品取得
     Route::get('/user/my-page', [UserController::class, 'getMyPageItems'])->name('getMyPageItems');
-    // 住所情報取得
-    Route::get('/user/address', [AddressController::class, 'getAddress'])->name('getAddress');
+    // デフォルト住所の取得
+    Route::get('/user/address/default', [AddressController::class, 'getDefaultAddress'])->name('getDefaultAddress');
+    // 指定住所情報の取得
+    Route::get('/user/address/{id}', [AddressController::class, 'getAddressById'])->name('getAddressById');
+    // 商品送付先登録
+    Route::post('/user/address', [AddressController::class, 'storeAddress'])->name('storeAddress');
 
     // カテゴリー選択肢提供
     Route::get('/categories', [CategoryController::class, 'getCategories'])->name('getCategories');

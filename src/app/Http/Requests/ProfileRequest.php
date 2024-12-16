@@ -41,7 +41,7 @@ class ProfileRequest extends FormRequest
 
             'image_path.file' => '画像はファイル形式でアップロードしてください',
             'image_path.mimes' => '画像はJPEGまたはPNG形式でアップロードしてください',
-            'image_path.max' => '画像は1MB以下にしてください',
+            'image_path.max' => '画像は1MB以下でアップロードしてください',
 
             'postal_code.required' => '郵便番号を入力してください',
             'postal_code.regex' => '郵便番号はXXX-XXXXの形式で入力してください',

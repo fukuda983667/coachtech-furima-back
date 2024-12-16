@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\ItemRequest;
 use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
@@ -67,25 +68,10 @@ class ItemController extends Controller
 
 
     // item作成処理
-    public function storeItem(Request $request)
+    public function storeItem(ItemRequest $request)
     {
-        // JSON文字列を配列にデコード
-        $categories = json_decode($request->input('categories'), true);
-        // デコードした配列をリクエストにマージ
-        $request->merge(['categories' => $categories]);
-
-        $validatedData = $request->validate([
-            'categories' => 'required|array',
-            'categories.*' => 'exists:categories,id', // 各IDがcategoriesテーブルに存在することを確認
-            'condition_id' => 'required|exists:item_conditions,id',
-            'name' => 'required|string|max:255',
-            'brand' => 'required|string|max:255',
-            'description' => 'required|string|max:255',
-            'price' => 'required|numeric|min:1|max:9999999',
-            'image_path' => 'required|file|mimes:jpeg,png|max:2048', // JPEG/PNG形式のみ許可、2MBまで
-        ]);
-
         // ファイルアップロード処理
+        $imagePath = null;
         if ($request->hasFile('image_path')) {
             $uploadedFile = $request->file('image_path');
 
@@ -93,24 +79,23 @@ class ItemController extends Controller
             $uniqueFileName = time() . '_' . $uploadedFile->getClientOriginalName();
 
             // ファイルを storage/app/public/items に保存
-            $path = $uploadedFile->storeAs('items', $uniqueFileName, 'public');
-            $validatedData['image_path'] = $uniqueFileName;
+            $uploadedFile->storeAs('items', $uniqueFileName, 'public');
+            $imagePath = $uniqueFileName;
         }
 
         // item作成
         $item = Item::create([
             'user_id' => Auth::id(),
-            'name' => $validatedData['name'],
-            'brand' => $validatedData['brand'],
-            'description' => $validatedData['description'],
-            'price' => $validatedData['price'],
-            'condition_id' => $validatedData['condition_id'],
-            'image_path' => $validatedData['image_path'],
+            'name' => $request->input('name'),
+            'brand' => $request->input('brand'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price'),
+            'condition_id' => $request->input('condition_id'),
+            'image_path' => $imagePath,  // アップロードされた画像のパスを保存
         ]);
 
         // 中間テーブル(categry_itemテーブル)へのレコード作成
-        $item->categories()->sync($validatedData['categories']);
-
+        $item->categories()->sync($request->input('categories'));
 
         return response()->json(['message' => '商品作成処理に成功しました'], 201);
     }

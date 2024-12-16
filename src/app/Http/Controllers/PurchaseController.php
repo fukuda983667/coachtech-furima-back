@@ -23,10 +23,8 @@ class PurchaseController extends Controller
         $Purchase = Purchase::create([
             'user_id' => Auth::id(), // ログイン中のユーザーID
             'item_id' => $request->item_id,
+            'address_id' => $request->address_id,
             'payment_method' => $request->payment_method,
-            'postal_code' => $request->postal_code,
-            'address' => $request->address,
-            'building_name' => $request->building_name,
         ]);
 
         // 作成したコメントの詳細を返す

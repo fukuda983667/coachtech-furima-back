@@ -22,3 +22,11 @@ php artisan migrate:refresh --seed --env=testing
 
 ./vendor/bin/phpunit --filter GetItemImageTest
 curl http://host.docker.internal:8080/storage/items/1.jpg --output 1.jpg
+
+
+
+factoryでダミーデータを作成できるようにして、テストケースを一から実装しなおせば、追いつける。
+テーブル設計が変更されたから、ER図の書き直し、基本設計書の作成。
+
+時間があれば、stripeの実装。
+さらに時間があれば、バリデーションメッセージをバックから受け取る方法に変更。

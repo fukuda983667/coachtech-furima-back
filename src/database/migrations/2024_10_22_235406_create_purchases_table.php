@@ -15,10 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');  // 購入者
             $table->foreignId('item_id')->constrained()->onDelete('cascade');
+            $table->foreignId('address_id')->constrained()->onDelete('cascade');
             $table->unsignedTinyInteger('payment_method');
-            $table->string('postal_code')->nullable(); // 郵便番号
-            $table->string('address')->nullable(); // 住所
-            $table->string('building_name')->nullable(); // 建物名
             $table->timestamps();
         });
     }

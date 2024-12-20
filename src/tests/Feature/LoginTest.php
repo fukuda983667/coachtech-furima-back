@@ -116,7 +116,7 @@ class LoginTest extends TestCase
             'password' => bcrypt('password123'), // 正しいパスワード
         ]);
 
-        // 誤ったパスワードでログインを試みる
+        // 誤ったパスワードでログイン
         $data = [
             'email' => 'test@example.com',
             'password' => 'password987', // 間違ったパスワード

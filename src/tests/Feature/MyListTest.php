@@ -4,9 +4,12 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
+use Database\Factories\ItemConditionFactory;
+use App\Models\ItemCondition;
 use App\Models\User;
+use App\Models\Item;
+use App\Models\Like;
 
 
 class MyListTest extends TestCase
@@ -14,20 +17,24 @@ class MyListTest extends TestCase
     use RefreshDatabase;
 
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // テスト開始前にマイグレーションをリフレッシュし、シーディングを実行 少し時間がかかる
-        Artisan::call('migrate:refresh --seed --env=testing');
-    }
-
-
     // お気に入り商品はisLikedプロパティがtrueである。→フロントエンドでお気に入りか否かを判断するためのプロパティがある。
     public function test_items_have_correct_isLiked_property()
     {
-        // テストユーザ情報
-        $testUser = User::where('email', 'test-taro@mail.com')->first();
+        // テストユーザ作成
+        $testUser = User::factory()->create();
+
+        // アイテムを生成
+        $itemCount = 5;
+        $items = Item::factory()->count($itemCount)->create();
+
+        // 最初の3つの商品をお気に入り登録
+        $likedItems = $items->take(3);
+        $likedItems->each(function ($item) use ($testUser) {
+            Like::factory()->create([
+                'user_id' => $testUser->id,
+                'item_id' => $item->id,
+            ]);
+        });
 
         // ログインしてリクエスト送信
         $this->actingAs($testUser);

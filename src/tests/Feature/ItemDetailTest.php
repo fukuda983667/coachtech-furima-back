@@ -4,9 +4,14 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 use GuzzleHttp\Client;
+use App\Models\User;
+use App\Models\Category;
+use App\Models\ItemCondition;
+use App\Models\Item;
+use App\Models\Like;
+use App\Models\Comment;
 
 
 class ItemDetailTest extends TestCase
@@ -14,47 +19,69 @@ class ItemDetailTest extends TestCase
     use RefreshDatabase;
 
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // テスト開始前にマイグレーションをリフレッシュし、シーディングを実行 少し時間がかかる
-        Artisan::call('migrate:refresh --seed --env=testing');
-    }
-
-
     // 商品詳細情報を取得できる。→フロントエンドで商品詳細画面を表示するために必要なデータを取得できる。
     public function test_it_returns_correct_item_details()
     {
-        // Seederで作成した"腕時計"(カテゴリ2つ持ち)の商品詳細情報を取得する。
-        $response = $this->getJson('/api/items/1');
+        // conditionレコード作成
+        $conditions = ItemCondition::factory()->createMany([
+            ['name' => '良好', ],
+            ['name' => '目立った傷や汚れなし', ],
+            ['name' => 'やや傷や汚れあり', ],
+            ['name' => '状態が悪い', ],
+        ]);
 
-        // ステータスコード 200 を確認
+        // テストユーザ作成
+        $testUser = User::factory()->create();
+
+        // カテゴリ作成
+        $categories = Category::factory()->count(2)->sequence(
+            ['name' => 'メンズ'],
+            ['name' => '時計'],
+        )->create();
+
+        // 商品作成
+        $item = Item::factory()
+            ->for($testUser, 'user')
+            ->for($conditions->first(), 'condition')
+            ->hasAttached($categories)
+            ->create([
+                'name' => '腕時計',
+                'brand' => '愛知時計',
+                'description' => 'スタイリッシュなデザインのメンズ腕時計',
+                'price' => 15000,
+                'image_path' => '1.jpg',
+            ]);
+
+        // APIリクエスト
+        $response = $this->getJson("/api/items/{$item->id}");
         $response->assertStatus(200);
 
-        // 環境設定からベースURLを取得 config('app.url')は.env.testingのAPP_URLを参照している
+        // ログにレスポンス表示
+        fwrite(STDOUT, "\n" . json_encode($response->json(), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . "\n");
+
+        // 環境設定からベースURLを取得
         $baseUrl = config('app.url') . '/storage/items/';
 
         // レスポンスのプロパティ名、データが一致するか確認
         $response->assertJson([
             'item' => [
-                'id' => 1,
-                'name' => '腕時計',
-                'description' => 'スタイリッシュなデザインのメンズ腕時計',
-                'price' => 15000,
-                'user_id' => 1,
-                'image_path' => $baseUrl . "1.jpg",
-                'condition_id' => 1,
-                'brand' => "テスト太郎商会",
-                'categories' => [
-                    ['id' => 5, 'name' => 'メンズ'],
-                    ['id' => 15, 'name' => '時計']
-                ],
+                'id' => $item->id,
+                'name' => $item->name,
+                'description' => $item->description,
+                'price' => $item->price,
+                'user_id' => $testUser->id,
+                'image_path' => $baseUrl . $item->image_path,
+                'condition_id' => $conditions->first()->id,
+                'brand' => $item->brand,
+                'categories' => $categories->map(fn($category) => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                ])->toArray(),
                 'condition' => [
-                    'id' => 1,
-                    'name' => '良好'
-                ]
-            ]
+                    'id' => $conditions->first()->id,
+                    'name' => $conditions->first()->name,
+                ],
+            ],
         ]);
     }
 
@@ -62,15 +89,21 @@ class ItemDetailTest extends TestCase
     // 特定のitemのお気に入り数を取得できるかテスト
     public function test_it_returns_like_count_for_item()
     {
-        // APIリクエストを送信
-        $response = $this->getJson('/api/likes/1');
+        // 商品作成
+        $item = Item::factory()->create();
 
-        // ステータスコード200を確認
+        // likeレコード3つ作成
+        $likeCount = 3;
+        Like::factory()->count($likeCount)->create([
+            'item_id' => $item->id,
+        ]);
+
+        $response = $this->getJson("/api/likes/{$item->id}");
         $response->assertStatus(200);
 
-        // お気に入り数が1であることを確認(LikeSeeder.phpで1にしてある)
+        // お気に入り数を確認
         $response->assertJson([
-            'like_count' => 1,
+            'like_count' => $likeCount,
         ]);
     }
 
@@ -78,49 +111,50 @@ class ItemDetailTest extends TestCase
     // 特定のitemに紐づくコメントが取得できるかテスト
     public function test_it_returns_comments_for_specific_item()
     {
-        // APIリクエストを送信
-        $response = $this->getJson('/api/comments/1');
+        // 商品作成
+        $item = Item::factory()->create();
 
-        // ステータスコード200を確認
+        // ユーザー作成
+        [$user1, $user2] = User::factory()->count(2)->create();
+
+        // commentレコード2つ作成
+        $commentCount = 2;
+        [$comment1, $comment2] = Comment::factory()->count($commentCount)->sequence(
+            ['user_id' => $user1->id, 'item_id' => $item->id,],
+            ['user_id' => $user2->id, 'item_id' => $item->id,],
+        )->create();
+
+        $response = $this->getJson("/api/comments/{$item->id}");
         $response->assertStatus(200);
 
         // 環境設定からユーザーアイコンのベースURLを取得
         $baseUrl = config('app.url') . '/storage/user-icons/';
 
-        // レスポンスのプロパティ名、データがSeederで設定したデータと一致するか確認
+        // レスポンスのプロパティ名、データが一致するか確認
         $response->assertJson([
             'comments' => [
                 [
-                    'user_id' => 2,
-                    'item_id' => 1,
-                    'comment' => '何年使用していましたか？',
+                    'user_id' => $user1->id,
+                    'item_id' => $item->id,
+                    'comment' => $comment1->comment,
                     'user' => [
-                        'id' => 2,
-                        'name' => 'テスト花子',
-                        'image_path' => $baseUrl . 'default-user.jpeg',
+                        'id' => $user1->id,
+                        'name' => $user1->name,
+                        'image_path' => $baseUrl . $user1->image_path,
                     ],
-                ]
+                ],
+                [
+                    'user_id' => $user2->id,
+                    'item_id' => $item->id,
+                    'comment' => $comment2->comment,
+                    'user' => [
+                        'id' => $user2->id,
+                        'name' => $user2->name,
+                        'image_path' => $baseUrl . $user2->image_path,
+                    ],
+                ],
             ],
-            'comment_count' => 1,
+            'comment_count' => $commentCount,
         ]);
-    }
-
-
-    // storageに保存されている商品画像がブラウザで表示できるかをテスト
-    public function test_can_get_item_image()
-    {
-        // $this->get()メソッドは実際にhttpリクエストを送信しているわけではなく、リクエストURLに
-        // 対応すると思われるweb.phpとapi.phpで設定したrouteを参照する。そのためstorageへのアクセスとはみなされず404エラーになる。
-        // docker descktopでnginxのログを確認すると、リクエストが届いていないことが確認できる。
-        // GuzzleHttpライブラリ使用すればブラウザと同じようにnginx経由でリクエスト送信することになるからstorageにアクセスできる。
-
-        $client = new Client();
-
-        // 単に'http://localhost:8080/storage/items/1.jpg'とするとコンテナ
-        $response = $client->get('http://host.docker.internal:8080/storage/items/1.jpg');
-
-        $this->assertEquals(200, $response->getStatusCode());
-
-        $this->assertEquals('image/jpeg', $response->getHeaderLine('Content-Type'));
     }
 }

@@ -25,8 +25,10 @@ class ItemRequest extends FormRequest
     // バリデーション前のデータ準備
     public function prepareForValidation()
     {
-        // JSON文字列を配列にデコードしてリクエストにマージ
-        if ($this->has('categories')) {
+        // 画像送信のためにフロントからmultipart/form-data形式でリクエスト送信される。
+        // この時、配列を送信しても文字列に変換されてしまうためJson配列に変換している。
+        if ($this->has('categories') && !is_array($this->input('categories'))) {
+            // JSON文字列を配列にデコードしてリクエストにマージ
             $categories = json_decode($this->input('categories'), true);
             $this->merge(['categories' => $categories]);
         }

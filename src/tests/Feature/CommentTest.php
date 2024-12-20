@@ -4,9 +4,10 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Item;
+use App\Models\Comment;
 
 
 class CommentTest extends TestCase
@@ -14,28 +15,28 @@ class CommentTest extends TestCase
     use RefreshDatabase;
 
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        // テスト開始前にマイグレーションをリフレッシュし、シーディングを実行 少し時間がかかる
-        Artisan::call('migrate:refresh --seed --env=testing');
-    }
-
-
     // コメント送信テスト 正常系
     public function test_user_can_comment_on_item()
     {
-        $testUser = User::where('email', 'test-taro@mail.com')->first();
+        // アイテム作成
+        $item = Item::factory()->create();
+
+        // commentレコード3つ作成
+        $commentCount = 3;
+        Comment::factory()->count($commentCount)->create(
+            ['item_id' => $item->id,]
+        );
+
+        $testUser = User::factory()->create();
         $this->actingAs($testUser);
 
         // コメント送信前のコメント件数を確認
-        $responseBefore = $this->getJson('/api/comments/1');
+        $responseBefore = $this->getJson("/api/comments/{$item->id}");
         $responseBefore->assertStatus(200);
         $initialCount = $responseBefore->json('comment_count');
 
         $data = [
-            'item_id' => 1,
+            'item_id' => $item->id,
             'comment' => 'テストコメント',
         ];
 
@@ -47,7 +48,7 @@ class CommentTest extends TestCase
         $response->assertJson(['message' => 'コメントを追加しました']);
 
         // コメント送信後のコメント件数を確認
-        $responseAfter = $this->getJson('/api/comments/1');
+        $responseAfter = $this->getJson("/api/comments/{$item->id}");
         $responseAfter->assertStatus(200);
         $updateCount = $responseAfter->json('comment_count');
 
@@ -56,9 +57,9 @@ class CommentTest extends TestCase
 
         // データベースにコメントが保存されていることを確認
         $this->assertDatabaseHas('comments', [
-            'user_id' => 1,
-            'item_id' => 1,
-            'comment' => 'テストコメント',
+            'user_id' => $testUser->id,
+            'item_id' => $data['item_id'],
+            'comment' => $data['comment'],
         ]);
     }
 
@@ -84,7 +85,7 @@ class CommentTest extends TestCase
     // バリデーションエラー コメント未入力
     public function test_comment_validation_comment_required()
     {
-        $testUser = User::where('email', 'test-taro@mail.com')->first();
+        $testUser = User::factory()->create();
         $this->actingAs($testUser);
 
         $data = [
@@ -110,7 +111,7 @@ class CommentTest extends TestCase
     // バリデーションエラー 文字数制限(255文字以下)
     public function test_comment_validation_comment_max()
     {
-        $testUser = User::where('email', 'test-taro@mail.com')->first();
+        $testUser = User::factory()->create();
         $this->actingAs($testUser);
 
         $data = [

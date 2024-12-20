@@ -59,7 +59,7 @@ class UserController extends Controller
         Address::where('user_id', $user->id)->where('is_default', true)->update(['is_default' => false]);
 
         // 新しい住所を追加（デフォルト設定）
-        Address::create([
+        $address = Address::create([
             'user_id' => $user->id,
             'postal_code' => $request->input('postal_code'),
             'address' => $request->input('address'),
@@ -67,8 +67,12 @@ class UserController extends Controller
             'is_default' => true,
         ]);
 
-            return response()->json(['message' => 'プロフィールが更新されました。',], 200);
-        }
+        return response()->json([
+            'message' => 'プロフィールが更新されました。',
+            'user' => $user,
+            'address' => $address,
+        ], 200);
+    }
 
     // マイページで表示する購入itemsと出品itemsを取得
     public function getMyPageItems()

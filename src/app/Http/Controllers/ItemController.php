@@ -97,6 +97,9 @@ class ItemController extends Controller
         // 中間テーブル(categry_itemテーブル)へのレコード作成
         $item->categories()->sync($request->input('categories'));
 
-        return response()->json(['message' => '商品作成処理に成功しました'], 201);
+        return response()->json([
+            'message' => '商品作成処理に成功しました',
+            'item' => $item,
+        ], 201);
     }
 }

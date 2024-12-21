@@ -20,16 +20,7 @@ class Item extends Model
     ];
 
 
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function comments()
-    {
-        return $this->hasMany(Comment::class);
-    }
-
+    // カテゴリと多対多
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_item');

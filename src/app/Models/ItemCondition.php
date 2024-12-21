@@ -10,9 +10,4 @@ class ItemCondition extends Model
     use HasFactory;
 
     protected $fillable = ['name'];
-
-    public function items()
-    {
-        return $this->hasMany(Item::class, 'condition_id');
-    }
 }

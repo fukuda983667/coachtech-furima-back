@@ -16,16 +16,5 @@ class Address extends Model
         'building_name',
         'is_default',
     ];
-
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function purchase()
-    {
-        return $this->hasOne(Purchase::class);
-    }
 }
 

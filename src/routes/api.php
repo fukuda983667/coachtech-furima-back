@@ -81,8 +81,6 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     Route::post('/comments', [CommentController::class, 'storeComment'])->name('storeComment');
 
 
-
-
     // 購入処理
     Route::post('/purchases', [PurchaseController::class, 'storePurchase'])->name('storePurchase');
 });

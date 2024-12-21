@@ -59,7 +59,7 @@ Route::group(['middleware' => ['auth:sanctum', 'verified']], function () {
     // プロファイル更新 (ユーザ名、住所、アイコン画像)
     Route::post('/user/profile', [UserController::class, 'storeProfile'])->name('storeProfile');
     // マイページ表示用の購入商品と出品商品取得
-    Route::get('/user/my-page', [UserController::class, 'getMyPageItems'])->name('getMyPageItems');
+    Route::get('/user/my-page/items', [UserController::class, 'getMyPageItems'])->name('getMyPageItems');
     // デフォルト住所の取得
     Route::get('/user/address/default', [AddressController::class, 'getDefaultAddress'])->name('getDefaultAddress');
     // 指定住所情報の取得

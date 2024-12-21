@@ -15,7 +15,7 @@ class AddressController extends Controller
         $user = Auth::user();
 
         // is_default が true のアドレスを取得
-        $address = Address::where('user_id', $user->id)->where('is_default', true)->first();
+        $address = $user->addresses()->where('is_default', true)->first();
 
         if (!$address) {
             return response()->json([
@@ -35,7 +35,7 @@ class AddressController extends Controller
         $user = Auth::user();
 
         // 指定されたIDの住所を取得
-        $address = Address::where('user_id', $user->id)->where('id', $id)->first();
+        $address = $user->addresses()->where('id', $id)->first();
 
         if (!$address) {
             return response()->json([

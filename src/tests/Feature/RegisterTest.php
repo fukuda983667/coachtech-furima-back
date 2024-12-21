@@ -108,7 +108,7 @@ class RegisterTest extends TestCase
                 ->assertJson([
                     'message' => '入力に誤りがあります',
                     'errors' => [
-                        'email' => ['有効なメールアドレスを入力してください。'],
+                        'email' => ['有効なメールアドレスを入力してください'],
                     ],
                 ]);
     }
@@ -135,7 +135,7 @@ class RegisterTest extends TestCase
                 ->assertJson([
                     'message' => '入力に誤りがあります',
                     'errors' => [
-                        'email' => ['このメールアドレスはすでに使用されています。'],
+                        'email' => ['このメールアドレスはすでに使用されています'],
                     ],
                 ]);
     }

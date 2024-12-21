@@ -18,7 +18,7 @@ class LikeController extends Controller
             'like_count' => Like::where('item_id', $id)->count(),
         ];
 
-        // ログイン中のユーザにのみ、お気に入り状況（isLiked）を取得
+        // ログイン中のユーザにのみ、お気に入り状況（isLiked）を追加
         if ($userId) {
             $isLiked = Like::where('user_id', $userId)->where('item_id', $id)->exists();
             $response['is_liked'] = $isLiked;

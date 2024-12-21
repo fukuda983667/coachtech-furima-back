@@ -26,9 +26,9 @@ class ItemRequest extends FormRequest
     public function prepareForValidation()
     {
         // 画像送信のためにフロントからmultipart/form-data形式でリクエスト送信される。
-        // この時、配列を送信しても文字列に変換されてしまうためJson配列に変換している。
+        // この時、配列を送信しても文字列に変換されてしまうため、リクエストデータが文字列ならJson配列に変換している。
         if ($this->has('categories') && !is_array($this->input('categories'))) {
-            // JSON文字列を配列にデコードしてリクエストにマージ
+            // 文字列を配列にデコードしてリクエストにマージ
             $categories = json_decode($this->input('categories'), true);
             $this->merge(['categories' => $categories]);
         }

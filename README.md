@@ -67,7 +67,7 @@ backはRESTfull APIの提供をします。
 
     https://mailtrap.io/
 
-3. 番号の手順に従って環境変数をコピーしてください。画像と異なりますが「Laravel 9+」を選択してください
+3. 番号の手順に従って環境変数をコピーしてください。
 
     ![env](/img/Mailtrap_env.png)
 
@@ -80,7 +80,7 @@ backはRESTfull APIの提供をします。
    MAIL_USERNAME=**************
    MAIL_PASSWORD=**************
    MAIL_ENCRYPTION=tls　# null→tlsに変更してください。
-   MAIL_FROM_ADDRESS=Rese@example.com
+   MAIL_FROM_ADDRESS="coachtech-furima@example.com"
    MAIL_FROM_NAME="${APP_NAME}"
    ```
 
@@ -108,28 +108,27 @@ backはRESTfull APIの提供をします。
     ```
 
 10. アプリケーションがhttp://localhost:3000 で利用可能になります。
-   ※Rese-frontの環境構築が必要です。
+   ※coachtech-furima-frontの環境構築が必要です。
 
 9. ユーザー登録後、MailtrapのInboxに認証メールが届くので、Verify Email Addressをクリックして認証を完了してください。
 
 ![認証メール](/img/認証メール.png)
 
-9. QRコードの読み取りはスクリーンショットでQRコード部分のみ切り取って、https://qrcode.red で読み取ってください。
 
 ## 仕様技術(実行環境)
 
 - PHP : 8.1.18
-- Laravel : 10.48.17
+- Laravel : 10.48.22
 - MySQL : 8.0.32
 - NGINX : 1.26.1
 - docker-compose.yml : 3.8
 
 ## ER図
 
-![ER図](/img/ER.svg)
+![ER図](/img/ER.png)
 
 ## ローカルリポジトリの削除  
 `git clone`したローカルリポジトリを完全に削除します。  
 ```
-sudo rm -rf Rese-back
+sudo rm -rf coachtech-furima-back
 ```

@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use GuzzleHttp\Client;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\ItemCondition;
@@ -41,10 +40,10 @@ class ItemDetailTest extends TestCase
 
         // 商品作成
         $item = Item::factory()
-            ->for($testUser, 'user')
             ->for($conditions->first(), 'condition')
             ->hasAttached($categories)
             ->create([
+                'user_id' => $testUser->id,
                 'name' => '腕時計',
                 'brand' => '愛知時計',
                 'description' => 'スタイリッシュなデザインのメンズ腕時計',

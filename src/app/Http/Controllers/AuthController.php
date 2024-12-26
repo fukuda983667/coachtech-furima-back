@@ -41,7 +41,7 @@ class AuthController extends Controller
         // 該当するメールアドレスのユーザーが存在するか確認
         $userExists = User::where('email', $credentials['email'])->exists();
         if (!$userExists) {
-            return response()->json(['message' => 'メールアドレスまたはパスワードが正しくありません'], 401);
+            return response()->json(['message' => 'ログイン情報が登録されていません。'], 401);
         }
 
         // 該当のカラムがユーザーテーブルに存在していた場合
@@ -56,7 +56,7 @@ class AuthController extends Controller
         }
 
         // 認証失敗
-        return response()->json(['message' => 'メールアドレスまたはパスワードが正しくありません'], 401);
+        return response()->json(['message' => 'ログイン情報が登録されていません。'], 401);
     }
 
 

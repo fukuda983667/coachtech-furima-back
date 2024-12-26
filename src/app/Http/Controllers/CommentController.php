@@ -24,6 +24,7 @@ class CommentController extends Controller
                     $query->select('id', 'name', 'image_path'); // コメントしたユーザ情報取得
                 }
             ])
+            ->orderBy('created_at', 'desc') // 降順に並べ替え
             ->get(['id', 'user_id', 'comment', 'created_at', 'item_id']); // コメント情報取得
 
         // 各コメントの user->image_path に $baseUrl を結合

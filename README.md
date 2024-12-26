@@ -114,7 +114,7 @@ backはRESTfull APIの提供をします。
 
 ![認証メール](/img/認証メール.png)
 
-9. phpunitテスト
+18. phpunitテスト
     ```bash
     ./vendor/bin/phpunit tests/Feature
     ```

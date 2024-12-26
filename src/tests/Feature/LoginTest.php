@@ -127,7 +127,7 @@ class LoginTest extends TestCase
         // レスポンスの検証
         $response->assertStatus(401)
                 ->assertJson([
-                    'message' => 'ログイン情報が登録されていません', // 修正されたメッセージ
+                    'message' => 'ログイン情報が登録されていません。',
                 ]);
 
         $this->assertGuest();

@@ -119,6 +119,7 @@ backはRESTfull APIの提供をします。
 
 - PHP : 8.1.18
 - Laravel : 10.48.22
+- phpunit : 10.5.36
 - MySQL : 8.0.32
 - NGINX : 1.26.1
 - docker-compose.yml : 3.8

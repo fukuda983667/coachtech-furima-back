@@ -92,9 +92,9 @@ class PurchaseTest extends TestCase
         $address = Address::factory()->create(['user_id' => $testUser->id]);
         $paymentMethod = 1;
 
-        // 購入前に商品一覧取得、itemのレスポンスにis_soldプロパティが含まれていてfalseか確認
+        // 購入前に商品取得、レスポンスにitemが含まれていないか確認
         $this->actingAs($testUser);
-        $responseBefore = $this->getJson('/api/user/my-page');
+        $responseBefore = $this->getJson('/api/user/my-page/items');
         $responseBefore->assertStatus(200);
 
         // 購入前のpurchased_itemsにitemが含まれていないことを確認
@@ -106,8 +106,8 @@ class PurchaseTest extends TestCase
         // 購入処理
         $this->purchaseItem($testUser, $item, $address, $paymentMethod);
 
-        // 購入後に商品一覧取得、itemのレスポンスにis_soldプロパティが含まれていてtrueか確認
-        $response = $this->getJson('/api/user/my-page');
+        // 購入後に商品取得、itemのレスポンスにis_soldプロパティが含まれていてtrueか確認
+        $response = $this->getJson('/api/user/my-page/items');
         $response->assertStatus(200);
 
         // 購入後のpurchased_itemsにitemが含まれていること、かつis_soldがtrueであることを確認

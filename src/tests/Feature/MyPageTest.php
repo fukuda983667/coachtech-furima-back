@@ -96,7 +96,7 @@ class MyPageTest extends TestCase
         ]);
 
         // 商品情報を取得
-        $response = $this->getJson('/api/user/my-page');
+        $response = $this->getJson('/api/user/my-page/items');
         $response->assertStatus(200);
 
         // 環境設定からベースURLを取得 config('app.url')は.env.testingのAPP_URLを参照している

@@ -106,7 +106,7 @@ class ItemsTest extends TestCase
         $ownItemCount = 2;
         $otherItemCount = 3;
 
-        $ownItems = Item::factory()->count($ownItemCount)->for($testUser, 'user')->create();
+        $ownItems = Item::factory()->count($ownItemCount)->create(['user_id' => $testUser->id,]);
         $otherItems = Item::factory()->count($otherItemCount)->create();
 
         // ログインしてリクエスト送信

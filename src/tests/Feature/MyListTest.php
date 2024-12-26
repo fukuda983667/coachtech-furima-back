@@ -48,8 +48,8 @@ class MyListTest extends TestCase
             // isLikedプロパティが存在していることを確認
             $this->assertArrayHasKey('is_liked', $item);
 
-            // ユーザモデルのlikesリレーションをitemに紐づくlikeレコードの存在をboolean型で取得
-            $expectedIsLiked = $testUser->likes()->where('item_id', $item['id'])->exists();
+            // likeレコードの存在をboolean型で取得
+            $expectedIsLiked = Like::where('user_id', $testUser->id)->where('item_id', $item['id'])->exists();
 
             // ログ出力
             fwrite(STDOUT, "Item ID: {$item['id']} | is_likedプロパティ "

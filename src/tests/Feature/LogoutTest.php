@@ -15,10 +15,7 @@ class LogoutTest extends TestCase
     // ログアウトテスト 正常系
     public function test_user_can_logout()
     {
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('password123'),
-        ]);
+        $user = User::factory()->create();
 
         // ログイン
         $this->actingAs($user);

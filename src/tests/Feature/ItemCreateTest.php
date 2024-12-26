@@ -69,7 +69,7 @@ class ItemCreateTest extends TestCase
 
         // データベースを確認
         $this->assertDatabaseHas('items', [
-            'id' => $testUser->id,
+            'user_id' => $testUser->id,
             'name' => $data['name'],
             'brand' => $data['brand'],
             'price' => $data['price'],

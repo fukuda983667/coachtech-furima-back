@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Config;
 
 class Item extends Model
 {
@@ -18,6 +19,8 @@ class Item extends Model
         'condition_id',
         'brand',
     ];
+
+    protected $appends = ['is_liked', 'is_sold'];
 
 
     // カテゴリと多対多
@@ -39,6 +42,27 @@ class Item extends Model
     public function purchase()
     {
         return $this->hasOne(Purchase::class);
+    }
+
+
+    // image_pathのフルURLを返す
+    public function getImagePathAttribute($value)
+    {
+        $baseUrl = Config::get('app.url') . '/storage/items/';
+        return $value ? $baseUrl . $value : null;
+    }
+
+    // is_liked プロパティの追加
+    public function getIsLikedAttribute()
+    {
+        $userId = auth()->id();
+        return $userId ? $this->likes()->where('user_id', $userId)->exists() : false;
+    }
+
+    // is_sold プロパティの追加
+    public function getIsSoldAttribute()
+    {
+        return $this->purchase()->exists();
     }
 }
 

@@ -14,7 +14,6 @@ class ItemController extends Controller
     public function getItems()
     {
         $userId = Auth::id(); // ログイン中のユーザーIDを取得
-        $baseUrl = Config::get('app.url') . '/storage/items/'; //envのAPP_URLを利用して商品画像を保存しているディレクトリのパスを設定
 
         // ログイン中のユーザーが出品した商品を除外、ゲストユーザ($userIdがnull)はそのまま全商品をフロントに渡す。
         $query = Item::query();
@@ -22,20 +21,7 @@ class ItemController extends Controller
             $query->where('user_id', '!=', $userId);
         }
 
-        // アイテムを取得し、image_path プロパティと is_liked プロパティを追加
-        $items = $query->get()->map(function ($item) use ($baseUrl, $userId) {
-            $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
-
-            // isLiked プロパティを追加（ログインしている場合）
-            if ($userId) {
-                $item->is_liked = $item->likes()->where('user_id', $userId)->exists();
-            }
-
-            // isSold プロパティを追加（購入済みかどうかを判定）
-            $item->is_sold = $item->purchase()->exists();
-
-            return $item;
-        });
+        $items = $query->get();
 
         // 取得したアイテムを JSON 形式で返す
         return response()->json(compact('items'), 200);
@@ -45,9 +31,6 @@ class ItemController extends Controller
     // 指定のitemの詳細を取得
     public function getItem($id)
     {
-        $userId = Auth::id(); // ログイン中のユーザーIDを取得
-        $baseUrl = Config::get('app.url') . '/storage/items/';
-
         // 指定された ID のアイテムを取得し、関連するカテゴリとコンディションも取得
         $item = Item::with(['categories', 'condition'])->find($id);
 
@@ -55,12 +38,6 @@ class ItemController extends Controller
         if (!$item) {
             return response()->json(['message' => '商品が見つかりませんでした'], 404);
         }
-
-        // 画像パスを構築
-        $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
-
-        // isSold プロパティを追加（購入済みかどうかを判定）
-        $item->is_sold = $item->purchase()->exists();
 
         // アイテム詳細を JSON 形式で返す
         return response()->json(compact('item'), 200);

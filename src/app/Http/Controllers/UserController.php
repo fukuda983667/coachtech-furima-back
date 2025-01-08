@@ -78,32 +78,17 @@ class UserController extends Controller
     public function getMyPageItems()
     {
         $userId = Auth::id(); // ログイン中のユーザーIDを取得
-        $baseUrl = Config::get('app.url') . '/storage/items/'; // 商品画像のベースURL
 
         // 購入したアイテムを取得
         $purchasedItems = Purchase::where('user_id', $userId)
             ->with('item') // アイテムリレーションをロード
             ->get()
-            ->map(function ($purchase) use ($baseUrl) {
-                // 各購入データに関連するアイテムを取得
-                if ($purchase->item) {
-                    $item = $purchase->item;
-                    $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
-                    $item->is_sold = true;
-                    return $item;
-                }
-                return null;
-            })->filter(); // null の値を除外
+            ->pluck('item') // リレーションの item を直接取得
+            ->filter(); // null の値を除外
 
         // 出品したアイテムを取得
         $listedItems = Item::where('user_id', $userId)
-            ->get()
-            ->map(function ($item) use ($baseUrl) {
-                $item->image_path = $item->image_path ? $baseUrl . $item->image_path : null;
-                // isSold プロパティを追加（購入済みかどうかを判定）
-                $item->is_sold = $item->purchase()->exists();
-                return $item;
-            });
+            ->get();
 
         return response()->json([
             'purchased_items' => $purchasedItems,

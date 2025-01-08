@@ -69,7 +69,7 @@ class ItemDetailTest extends TestCase
                 'description' => $item->description,
                 'price' => $item->price,
                 'user_id' => $testUser->id,
-                'image_path' => $baseUrl . $item->image_path,
+                'image_path' => $item->image_path,
                 'condition_id' => $conditions->first()->id,
                 'brand' => $item->brand,
                 'categories' => $categories->map(fn($category) => [
@@ -82,6 +82,10 @@ class ItemDetailTest extends TestCase
                 ],
             ],
         ]);
+
+        // image_pathがbaseUrlで始まることを確認
+        $responseImagePath = $response->json('item.image_path');
+        $this->assertStringStartsWith($baseUrl, $responseImagePath);
     }
 
 

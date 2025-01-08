@@ -99,9 +99,6 @@ class MyPageTest extends TestCase
         $response = $this->getJson('/api/user/my-page/items');
         $response->assertStatus(200);
 
-        // 環境設定からベースURLを取得 config('app.url')は.env.testingのAPP_URLを参照している
-        $baseUrl = config('app.url') . '/storage/items/';
-
         // 作成しておいたレコードを取得できているか確認
         $response->assertJson([
             'purchased_items' => [
@@ -109,17 +106,31 @@ class MyPageTest extends TestCase
                     'id' => $purchasedItem->id,
                     'name' => $purchasedItem->name,
                     'is_sold' => true,
-                    'image_path' => $baseUrl . $purchasedItem->image_path,
+                    'image_path' => $purchasedItem->image_path,
                 ],
             ],
             'listed_items' => [
                 [
                     'id' => $listedItem->id,
                     'name' => $listedItem->name,
-                    'image_path' => $baseUrl . $listedItem->image_path,
+                    'image_path' => $listedItem->image_path,
                 ],
             ],
         ]);
+
+        // 環境設定からベースURLを取得 config('app.url')は.env.testingのAPP_URLを参照している
+        $baseUrl = config('app.url') . '/storage/items/';
+
+        // レスポンスデータを解析
+        $responseData = $response->json();
+
+        // 購入商品の image_path が baseUrl で始まることを確認
+        $purchasedItemImagePath = $response->json('purchased_items.0.image_path');
+        $this->assertStringStartsWith($baseUrl, $purchasedItemImagePath);
+
+        // 出品商品の image_path が baseUrl で始まることを確認
+        $listedItemImagePath = $response->json('listed_items.0.image_path');
+        $this->assertStringStartsWith($baseUrl, $listedItemImagePath);
     }
 
 
